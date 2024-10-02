@@ -1,17 +1,24 @@
 var express = require("express");
 require('dotenv').config()
-const path = require('path')
+const configViewEngine = require("./config/viewEngine.js")
+const webRouter = require('./routes/web.js')
+const mysql = require("mysql2")
 
 var app = express();
 let port = 3000;
 hostname = 'localhost'
 
-app.set('views', './src/views')
-app.use(express.static(path.join(__dirname, 'public')))
+configViewEngine(app)
 
-console.log('check env', process.env.PORT || 3000)
-app.get("/", function (req, res) {
-    res.render('sample.ejs')
+app.use('/', webRouter)
+
+//create connection 
+const connection = await mysql.createConnection({
+    host: 'localhost',
+    port: 3307,//default 3306
+    user: 'root',
+    password: '123456',
+    database: 'datatest',
 });
 
 
